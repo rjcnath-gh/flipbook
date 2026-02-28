@@ -35,6 +35,23 @@ body {
     transition: opacity 0.8s ease;
     margin-top: -5vh;     /* Slight offset to center it better visually */
 }
+.page { 
+    width: 100%; height: 100%; position: absolute; background: white; 
+    transform-origin: left; transition: transform 0.6s ease; 
+    backface-visibility: hidden; 
+    
+    /* FIX: Remove 'display: none' so images actually load */
+    visibility: hidden;      
+    opacity: 0;
+    will-change: transform; 
+    transform: translateZ(0);
+}
+
+/* FIX: Show the page when it is active */
+.page.active-view { 
+    visibility: visible; 
+    opacity: 1; 
+}
 
 .page img { 
     width: 100%; 
@@ -43,18 +60,12 @@ body {
     background: #121212;  /* Match background so edges blend in */
     border-radius: 8px;   /* Slightly tighter corners for a cleaner look */
 
-                /* ADD THESE 3 LINES FOR PERFORMANCE */
-            display: none;             /* Hide pages by default to save RAM */
-            will-change: transform;    /* Prep the GPU */
-            transform: translateZ(0);  /* Force hardware acceleration */
-
 }
         
         
         /* NEW: This class turns the page "on" only when needed */
-        .page.active-view { display: block; }
+        /* .page.active-view { display: block; } */
         
-        .page img { width: 100%; height: 100%; object-fit: contain; border-radius: 0 12px 12px 0; }
         .flipped { transform: rotateY(-170deg); z-index: 1 !important; }
 
         /* Nav Zones */
