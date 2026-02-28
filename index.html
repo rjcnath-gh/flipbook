@@ -43,13 +43,44 @@
         .nav-zones { position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; z-index: 1000; pointer-events: none; }
         .zone { width: 50%; height: 100%; cursor: pointer; pointer-events: auto; -webkit-tap-highlight-color: transparent; }
 
-        /* Index UI */
-        .index-container { width: 100%; position: fixed; bottom: 40px; display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 2000; }
-        .index-bar { display: flex; gap: 8px; overflow-x: auto; padding: 10px; width: 90%; justify-content: center; }
+        /* New Index UI */
+        /* 1. The Container: Positions the whole UI at the bottom */
+        .index-container { 
+            width: 95%; 
+            position: fixed; 
+            bottom: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 8px; 
+            z-index: 2000; 
+        }
+
+        /* 2. The Bar: Handles the 4-line wrapping logic */
+        .index-bar { 
+            display: flex; 
+            flex-wrap: wrap;       /* This makes the dots wrap to new lines automatically */
+            justify-content: center; 
+            gap: 6px;              /* Tight spacing to fit more on one line */
+            width: 100%;           
+            max-width: 380px;      
+        }
+
+        /* 3. The Dot: Sized for high-density grids */
         .index-dot { 
-            min-width: 35px; height: 35px; background: #222; color: #666;
-            border-radius: 6px; display: flex; justify-content: center; align-items: center;
-            font-size: 0.8rem; cursor: pointer; border: 1px solid #333; transition: 0.3s;
+            width: 34px;           /* Slightly smaller to ensure 8+ fit per row */
+            height: 34px; 
+            background: #222; 
+            color: #888;
+            border-radius: 6px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            font-size: 0.7rem; 
+            cursor: pointer; 
+            border: 1px solid #333; 
+            transition: 0.2s;
+            flex-shrink: 0;        /* IMPORTANT: Prevents dots from becoming narrow ovals */
         }
         .index-dot.active { background: #fff; color: #000; border-color: #fff; transform: scale(1.1); }
         .index-label {
