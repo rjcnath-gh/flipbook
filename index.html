@@ -617,58 +617,54 @@
 </div>
 
 <script>
-    const pages = document.querySelectorAll('.page');
-    const menuPanel = document.getElementById('menu-panel');
-    let currentIndex = 0;
-    let touchStartY = 0;
-    
-    // Swipe logic to close menu
-    menuPanel.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
-    menuPanel.addEventListener('touchend', e => { 
-        if (e.changedTouches[0].clientY - touchStartY > 50) menuPanel.classList.remove('open'); 
+const pages = document.querySelectorAll('.page');
+const menuPanel = document.getElementById('menu-panel');
+let currentIndex = 0;
+
+function updateUI() {
+    pages.forEach((page, i) => {
+        // 1. Z-Index Management
+        page.style.zIndex = pages.length - i;
+
+        // 2. Optimized Visibility: Only keep current, prev, and next in DOM flow
+        if (i >= currentIndex - 1 && i <= currentIndex + 1) {
+            page.classList.add('active-view');
+            // Manually trigger image load for the next page
+            const img = page.querySelector('img');
+            if(img && img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            }
+        } else {
+            page.classList.remove('active-view');
+        }
+
+        // 3. Flip Logic
+        if (i < currentIndex) {
+            page.classList.add('flipped');
+            page.style.zIndex = i;
+        } else {
+            page.classList.remove('flipped');
+        }
     });
-    
-    function toggleMenu() { menuPanel.classList.toggle('open'); }
-    
-    function updateUI() {
-        pages.forEach((page, i) => {
-            page.style.zIndex = pages.length - i;
-            // Memory management: only show current and neighbors
-            if (i >= currentIndex - 1 && i <= currentIndex + 1) {
-                page.classList.add('active-view');
-            } else {
-                page.classList.remove('active-view');
-            }
-            // Flip state
-            if (i < currentIndex) {
-                page.classList.add('flipped');
-                page.style.zIndex = i;
-            } else {
-                page.classList.remove('flipped');
-            }
-        });
-        // Sync active dots
-        document.querySelectorAll('.index-dot').forEach(dot => {
-            const dotIdx = parseInt(dot.getAttribute('data-idx'));
-            dot.classList.toggle('active', dotIdx === currentIndex);
-        });
-    }
-    
-    function jumpTo(targetIndex) {
-        currentIndex = Math.min(Math.max(0, targetIndex), pages.length - 1);
-        updateUI();
-        menuPanel.classList.remove('open');
-    }
-    
-    // Navigation for side-taps
-    function goForward() { if (currentIndex < pages.length - 1) { currentIndex++; updateUI(); } }
-    function goBack() { if (currentIndex > 0) { currentIndex--; updateUI(); } }
-    
-    window.onload = () => {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('flipbook').style.opacity = '1';
-        updateUI();
-    }
+}
+
+// FIX: Initialize immediately so the user sees Page 1 right away
+// Don't wait for the whole window to load!
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('flipbook').style.opacity = '1';
+    updateUI();
+});
+
+function jumpTo(targetIndex) {
+    currentIndex = Math.min(Math.max(0, targetIndex), pages.length - 1);
+    updateUI();
+    if(menuPanel) menuPanel.classList.remove('open');
+}
+
+function goForward() { if (currentIndex < pages.length - 1) { currentIndex++; updateUI(); } }
+function goBack() { if (currentIndex > 0) { currentIndex--; updateUI(); } }
 </script>
     
 </body>
