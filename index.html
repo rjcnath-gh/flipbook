@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Flipbook App</title>
+    <title>Interactive Flipbook</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,97 +11,110 @@
     <style>
         body { background: #121212; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; font-family: -apple-system, sans-serif; }
         
-        .book { 
-            width: 85vw; height: 65vh; max-width: 400px; 
-            position: relative; perspective: 2000px; 
-        }
+        /* The Book Container */
+        .book { width: 85vw; height: 60vh; max-width: 400px; position: relative; perspective: 2000px; }
 
         .page { 
-            width: 100%; height: 100%; position: absolute; background: #fff; 
-            transform-origin: left; transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1), z-index 0.1s; 
+            width: 100%; height: 100%; position: absolute; background: white; 
+            transform-origin: left; transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1); 
             box-shadow: 0 10px 25px rgba(0,0,0,0.5); border-radius: 0 12px 12px 0;
             backface-visibility: hidden; user-select: none;
-            overflow: hidden;
         }
 
-        /* Styling the placeholder images */
-        .page img { width: 100%; height: 100%; object-fit: cover; }
+        .page img { width: 100%; height: 100%; object-fit: contain; border-radius: 0 12px 12px 0; }
+        .flipped { transform: rotateY(-170deg); z-index: 1 !important; }
 
-        /* The Flip State */
-        .flipped { transform: rotateY(-170deg); }
+        /* Navigation Tapping Zones */
+        .nav-zones { position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; z-index: 1000; pointer-events: none; }
+        .zone { width: 50%; height: 100%; cursor: pointer; pointer-events: auto; -webkit-tap-highlight-color: transparent; }
 
-        /* Navigation Overlay */
-        .nav-zones {
-            position: absolute; width: 100%; height: 100%;
-            top: 0; left: 0; display: flex; z-index: 100;
+        /* The Index Bar */
+        .index-container {
+            width: 100%; position: fixed; bottom: 40px; 
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
-        .zone { width: 50%; height: 100%; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-
-        .instruction { color: white; margin-top: 30px; opacity: 0.5; font-size: 0.7rem; letter-spacing: 2px; text-align: center; }
-        .page-num { position: absolute; bottom: 10px; right: 15px; font-size: 12px; color: #999; }
+        .index-title { color: white; font-size: 0.8rem; opacity: 0.6; letter-spacing: 1px; }
+        .index-bar { 
+            display: flex; gap: 8px; overflow-x: auto; padding: 10px 20px;
+            width: 90%; max-width: 500px; scrollbar-width: none;
+        }
+        .index-bar::-webkit-scrollbar { display: none; }
+        
+        .index-dot { 
+            min-width: 40px; height: 40px; background: #333; color: white;
+            border-radius: 8px; display: flex; justify-content: center; align-items: center;
+            font-size: 0.9rem; font-weight: bold; cursor: pointer; border: 1px solid #444;
+        }
+        .index-dot.active { background: #fff; color: #000; transform: scale(1.1); }
     </style>
 </head>
 <body>
 
 <div class="book" id="flipbook">
     <div class="nav-zones">
-        <div class="zone" onclick="goBack()" title="Back"></div>
-        <div class="zone" onclick="goForward()" title="Forward"></div>
+        <div class="zone" onclick="goBack()"></div>
+        <div class="zone" onclick="goForward()"></div>
     </div>
 
-    <div class="page" style="z-index: 5;">
-        <img src="P1000017.JPG">
-        <div class="page-num">Cover</div>
-    </div>
-    
-    <div class="page" style="z-index: 4;">
-        <img src="P1000054.JPG">
-        <div class="page-num">Page 2</div>
-    </div>
+    <div class="page" style="z-index: 5;"><img src="page1.jpg"></div>
+    <div class="page" style="z-index: 4;"><img src="page2.jpg"></div>
+    <div class="page" style="z-index: 3;"><img src="page3.jpg"></div>
+    <div class="page" style="z-index: 2;"><img src="page4.jpg"></div>
+    <div class="page" style="z-index: 1;"><img src="page5.jpg"></div>
+</div>
 
-    <div class="page" style="z-index: 3;">
-        <img src="P1000302.JPG">
-        <div class="page-num">Page 3</div>
-    </div>
-
-    <div class="page" style="z-index: 2;">
-        <img src="P1000303.JPG">
-        <div class="page-num">Page 4</div>
-    </div>
-
-    <div class="page" style="z-index: 1;">
-        <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=800&q=80">
-        <div class="page-num">The End</div>
+<div class="index-container">
+    <div class="index-title">SKIP TO PAGE</div>
+    <div class="index-bar">
+        <div class="index-dot" onclick="jumpTo(0)">1</div>
+        <div class="index-dot" onclick="jumpTo(1)">2</div>
+        <div class="index-dot" onclick="jumpTo(2)">3</div>
+        <div class="index-dot" onclick="jumpTo(3)">4</div>
+        <div class="index-dot" onclick="jumpTo(4)">5</div>
     </div>
 </div>
 
-<div class="instruction">TAP LEFT TO GO BACK <br> TAP RIGHT TO GO FORWARD</div>
-
 <script>
     const pages = document.querySelectorAll('.page');
+    const dots = document.querySelectorAll('.index-dot');
     let currentIndex = 0;
+
+    function updateActiveDot() {
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentIndex);
+        });
+    }
 
     function goForward() {
         if (currentIndex < pages.length - 1) {
-            const page = pages[currentIndex];
-            page.classList.add('flipped');
-            // Wait for flip half-way point to drop z-index
-            setTimeout(() => { 
-                if(page.classList.contains('flipped')) page.style.zIndex = 1; 
-            }, 300);
+            pages[currentIndex].classList.add('flipped');
             currentIndex++;
+            updateActiveDot();
         }
     }
 
     function goBack() {
         if (currentIndex > 0) {
             currentIndex--;
-            const page = pages[currentIndex];
-            page.classList.remove('flipped');
-            // Bring back to top immediately
-            page.style.zIndex = pages.length - currentIndex;
+            pages[currentIndex].classList.remove('flipped');
+            pages[currentIndex].style.zIndex = pages.length - currentIndex;
+            updateActiveDot();
         }
     }
+
+    function jumpTo(targetIndex) {
+        // If jumping forward
+        while (currentIndex < targetIndex) {
+            goForward();
+        }
+        // If jumping backward
+        while (currentIndex > targetIndex) {
+            goBack();
+        }
+    }
+
+    // Initialize first dot
+    updateActiveDot();
 </script>
 
 </body>
