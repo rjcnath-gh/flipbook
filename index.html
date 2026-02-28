@@ -618,90 +618,57 @@
 
 <script>
     const pages = document.querySelectorAll('.page');
-    const book = document.getElementById('flipbook');
-    const loader = document.getElementById('loader');
-    const allDots = document.querySelectorAll('.index-dot');
+    const menuPanel = document.getElementById('menu-panel');
     let currentIndex = 0;
-
-    /**
-     * HIGH PERFORMANCE UPDATE ENGINE
-     * This handles 400+ pages by only "waking up" the images 
-     * near the current page.
-     */
+    let touchStartY = 0;
+    
+    // Swipe logic to close menu
+    menuPanel.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
+    menuPanel.addEventListener('touchend', e => { 
+        if (e.changedTouches[0].clientY - touchStartY > 50) menuPanel.classList.remove('open'); 
+    });
+    
+    function toggleMenu() { menuPanel.classList.toggle('open'); }
+    
     function updateUI() {
         pages.forEach((page, i) => {
-            // 1. DYNAMIC Z-INDEX 
-            // Ensures the correct page is always on top of the stack
             page.style.zIndex = pages.length - i;
-
-            // 2. MEMORY MANAGEMENT (The "Secret Sauce")
-            // Only 'display: block' the current page and its immediate neighbors.
-            // This prevents the browser from lagging on 400 images.
+            // Memory management: only show current and neighbors
             if (i >= currentIndex - 1 && i <= currentIndex + 1) {
                 page.classList.add('active-view');
             } else {
                 page.classList.remove('active-view');
             }
-
-            // 3. FLIP ANIMATION
+            // Flip state
             if (i < currentIndex) {
                 page.classList.add('flipped');
-                // When flipped, we drop the z-index so it stays behind the rest
-                page.style.zIndex = i; 
+                page.style.zIndex = i;
             } else {
                 page.classList.remove('flipped');
             }
         });
-
-        // 4. SYNC INDEX DOTS
-        // Matches the active dot to the current page
-        allDots.forEach(dot => {
-            // This assumes your dots have an onclick="jumpTo(X)"
-            // We check if the jumpTo value matches our current index
-            const dotAction = dot.getAttribute('onclick');
-            if (dotAction && dotAction.includes(`jumpTo(${currentIndex})`)) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
+        // Sync active dots
+        document.querySelectorAll('.index-dot').forEach(dot => {
+            const dotIdx = parseInt(dot.getAttribute('data-idx'));
+            dot.classList.toggle('active', dotIdx === currentIndex);
         });
     }
-
-    function goForward() {
-        if (currentIndex < pages.length - 1) {
-            currentIndex++;
-            updateUI();
-        }
-    }
-
-    function goBack() {
-        if (currentIndex > 0) {
-            currentIndex--;
-            updateUI();
-        }
-    }
-
-    /**
-     * INSTANT JUMP
-     * Replaces the slow 'while' loop with a direct state update.
-     */
+    
     function jumpTo(targetIndex) {
         currentIndex = Math.min(Math.max(0, targetIndex), pages.length - 1);
         updateUI();
-        
-        // Optional: Scroll the index bar to show the active dot
-        const activeDot = document.querySelector('.index-dot.active');
-        if (activeDot) {
-            activeDot.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
+        menuPanel.classList.remove('open');
     }
-
-    // Initialize the book once the window (and its first few images) loads
+    
+    // Navigation for side-taps
+    function goForward() { if (currentIndex < pages.length - 1) { currentIndex++; updateUI(); } }
+    function goBack() { if (currentIndex > 0) { currentIndex--; updateUI(); } }
+    
     window.onload = () => {
-        if(loader) loader.style.display = 'none';
-        if(book) book.style.opacity = '1';
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('flipbook').style.opacity = '1';
         updateUI();
-    };
+    }
 </script>
     
 </body>
