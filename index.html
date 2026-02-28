@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Interactive Flipbook</title>
+    <title>Flipbook App</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,8 +11,15 @@
     <style>
         body { background: #121212; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; font-family: -apple-system, sans-serif; }
         
-        /* The Book Container */
-        .book { width: 85vw; height: 60vh; max-width: 400px; position: relative; perspective: 2000px; }
+        /* Preloader */
+        #loader { color: white; font-size: 0.9rem; letter-spacing: 2px; position: absolute; }
+
+        /* The Book Container - Starts invisible */
+        .book { 
+            width: 85vw; height: 60vh; max-width: 400px; 
+            position: relative; perspective: 2000px; 
+            opacity: 0; transition: opacity 0.8s ease;
+        }
 
         .page { 
             width: 100%; height: 100%; position: absolute; background: white; 
@@ -24,31 +31,24 @@
         .page img { width: 100%; height: 100%; object-fit: contain; border-radius: 0 12px 12px 0; }
         .flipped { transform: rotateY(-170deg); z-index: 1 !important; }
 
-        /* Navigation Tapping Zones */
+        /* Nav Zones */
         .nav-zones { position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; z-index: 1000; pointer-events: none; }
         .zone { width: 50%; height: 100%; cursor: pointer; pointer-events: auto; -webkit-tap-highlight-color: transparent; }
 
-        /* The Index Bar */
-        .index-container {
-            width: 100%; position: fixed; bottom: 40px; 
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-        }
-        .index-title { color: white; font-size: 0.8rem; opacity: 0.6; letter-spacing: 1px; }
-        .index-bar { 
-            display: flex; gap: 8px; overflow-x: auto; padding: 10px 20px;
-            width: 90%; max-width: 500px; scrollbar-width: none;
-        }
-        .index-bar::-webkit-scrollbar { display: none; }
-        
+        /* Index UI */
+        .index-container { width: 100%; position: fixed; bottom: 40px; display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 2000; }
+        .index-bar { display: flex; gap: 8px; overflow-x: auto; padding: 10px; width: 90%; justify-content: center; }
         .index-dot { 
-            min-width: 40px; height: 40px; background: #333; color: white;
-            border-radius: 8px; display: flex; justify-content: center; align-items: center;
-            font-size: 0.9rem; font-weight: bold; cursor: pointer; border: 1px solid #444;
+            min-width: 35px; height: 35px; background: #222; color: #666;
+            border-radius: 6px; display: flex; justify-content: center; align-items: center;
+            font-size: 0.8rem; cursor: pointer; border: 1px solid #333; transition: 0.3s;
         }
-        .index-dot.active { background: #fff; color: #000; transform: scale(1.1); }
+        .index-dot.active { background: #fff; color: #000; border-color: #fff; transform: scale(1.1); }
     </style>
 </head>
 <body>
+
+<div id="loader">LOADING...</div>
 
 <div class="book" id="flipbook">
     <div class="nav-zones">
@@ -56,15 +56,14 @@
         <div class="zone" onclick="goForward()"></div>
     </div>
 
-    <div class="page" style="z-index: 5;"><img src="page1.jpg"></div>
-    <div class="page" style="z-index: 4;"><img src="page2.jpg"></div>
-    <div class="page" style="z-index: 3;"><img src="page3.jpg"></div>
-    <div class="page" style="z-index: 2;"><img src="page4.jpg"></div>
-    <div class="page" style="z-index: 1;"><img src="page5.jpg"></div>
+    <div class="page" style="z-index: 5;"><img src="page1.jpg?v=1.1" loading="eager"></div>
+    <div class="page" style="z-index: 4;"><img src="page2.jpg?v=1.1" loading="eager"></div>
+    <div class="page" style="z-index: 3;"><img src="page3.jpg?v=1.1" loading="eager"></div>
+    <div class="page" style="z-index: 2;"><img src="page4.jpg?v=1.1" loading="eager"></div>
+    <div class="page" style="z-index: 1;"><img src="page5.jpg?v=1.1" loading="eager"></div>
 </div>
 
 <div class="index-container">
-    <div class="index-title">SKIP TO PAGE</div>
     <div class="index-bar">
         <div class="index-dot" onclick="jumpTo(0)">1</div>
         <div class="index-dot" onclick="jumpTo(1)">2</div>
@@ -77,7 +76,16 @@
 <script>
     const pages = document.querySelectorAll('.page');
     const dots = document.querySelectorAll('.index-dot');
+    const book = document.getElementById('flipbook');
+    const loader = document.getElementById('loader');
     let currentIndex = 0;
+
+    // Show book only after everything (images) is loaded
+    window.onload = () => {
+        loader.style.display = 'none';
+        book.style.opacity = '1';
+        updateActiveDot();
+    };
 
     function updateActiveDot() {
         dots.forEach((dot, i) => {
@@ -103,18 +111,12 @@
     }
 
     function jumpTo(targetIndex) {
-        // If jumping forward
-        while (currentIndex < targetIndex) {
-            goForward();
-        }
-        // If jumping backward
-        while (currentIndex > targetIndex) {
-            goBack();
+        if (targetIndex > currentIndex) {
+            while (currentIndex < targetIndex) goForward();
+        } else if (targetIndex < currentIndex) {
+            while (currentIndex > targetIndex) goBack();
         }
     }
-
-    // Initialize first dot
-    updateActiveDot();
 </script>
 
 </body>
