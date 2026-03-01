@@ -10,6 +10,15 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <style>
+        #flipbook {
+    /* Prevents the browser from handling horizontal swipes (like 'back' navigation) */
+    touch-action: pan-y; 
+    
+    /* Prevents selecting text while swiping */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
         /* Make sure the container doesn't bounce around on mobile */
 body {
     height: 100vh;
@@ -68,6 +77,9 @@ body {
 
     background: #121212;  /* Match background so edges blend in */
     border-radius: 8px;   /* Slightly tighter corners for a cleaner look */
+
+    pointer-events: none; 
+
 
 }
         
@@ -756,6 +768,37 @@ const pages = document.querySelectorAll('.page');
 const menuPanel = document.getElementById('menu-panel');
 let currentIndex = 0;
 
+    /* --- Swipe Logic --- */
+let touchStartX = 0;
+let touchEndX = 0;
+const swipeThreshold = 50; // Minimum distance to trigger a flip
+
+// Listen for touch starts on the book container
+const flipbookElement = document.getElementById('flipbook');
+
+flipbookElement.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+flipbookElement.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, { passive: true });
+
+function handleSwipe() {
+    const swipeDistance = touchEndX - touchStartX;
+
+    // Swipe Left (Finger moves Right to Left) -> Go Forward
+    if (swipeDistance < -swipeThreshold) {
+        goForward();
+    }
+    
+    // Swipe Right (Finger moves Left to Right) -> Go Back
+    if (swipeDistance > swipeThreshold) {
+        goBack();
+    }
+}
+    
 function updateUI() {
 
     // Force the scroll to the top so the book is always centered
