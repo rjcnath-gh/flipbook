@@ -26,8 +26,8 @@ body {
 
         /* Optimized for Full Screen Reading */
 .book { 
-    width: 100vw;          /* Use 95% of screen width */
-    height: 90vh;         /* Use 82% of screen height */
+    width: 95vw;          /* Use 95% of screen width */
+    height: 82vh;         /* Use 82% of screen height */
     max-width: none;      /* Remove the 400px limit for larger phones */
     position: relative; 
     perspective: 2000px;
@@ -38,6 +38,7 @@ body {
     align-items: center;
     transition: opacity 0.8s ease;
     margin-top: -5vh;     /* Slight offset to center it better visually */
+    overflow: hidden;
 }
 
 .page { 
@@ -167,12 +168,36 @@ body {
     justify-content: space-between;
     padding: 0 25px 20px;
 }
+
 @media (orientation: landscape) {
     .book {
-        height: 100vh; /* Use 100% of height in landscape */
-        width: 70vw;   /* Narrow the width so it looks like a book page */
+        height: 95vh;      /* Use the full height of the screen */
+        width: 75vw;        /* Slightly wider for better landscape reading */
+        margin-left: 10vw;  /* This adds the margin on the left */
+        margin-right: auto; /* Ensures it doesn't just push off-screen */
+    }
+
+    /* Portrait Mode: Maximize vertical space */
+@media (orientation: portrait) {
+    .book { 
+        width: 95vw; 
+        height: 80vh; 
+        margin-left: 5;
     }
 }
+.page img {
+       object-fit: contain; /* Ensures the Sanskrit text isn't cropped */
+ 
+    image-rendering: -webkit-optimize-contrast; /* Keeps text crisp on mobile */
+    }
+
+    /* Move the index button so it doesn't overlap the book in landscape */
+    #menu-toggle {
+        bottom: 10px;
+        right: 10px;
+        transform: scale(0.8); /* Shrink it slightly for landscape */
+    }
+}        
     </style>
 </head>
 <body>
@@ -665,10 +690,14 @@ body {
         <div class="index-dot" onclick="jumpTo(0)">Intro</div>
         <div class="index-dot" onclick="jumpTo(400)">End</div>
         
-        <div class="index-dot" onclick="jumpTo(33)">1</div>
-        <div class="index-dot" onclick="jumpTo(38)">2</div>
-        <div class="index-dot" onclick="jumpTo(50)">1</div>
-        <div class="index-dot" onclick="jumpTo(61)">2</div>
+        <div class="index-dot" onclick="jumpTo(32)">1</div>
+        <div class="index-dot" onclick="jumpTo(37)">2</div>
+        <div class="index-dot" onclick="jumpTo(49)">3</div>
+        <div class="index-dot" onclick="jumpTo(60)">4</div>
+        <div class="index-dot" onclick="jumpTo(70)">5</div>
+        <div class="index-dot" onclick="jumpTo(84)">6</div>
+        <div class="index-dot" onclick="jumpTo(97)">7</div>
+        <div class="index-dot" onclick="jumpTo(109)">8</div>
 
     </div>
 </div>
