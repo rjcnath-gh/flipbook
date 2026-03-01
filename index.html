@@ -51,6 +51,7 @@ body {
     opacity: 0;
     will-change: transform; 
     transform: translateZ(0);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
 }
 
 /* FIX: Show the page when it is active */
@@ -171,10 +172,11 @@ body {
 
 @media (orientation: landscape) {
     .book {
-        height: 95vh;      /* Use the full height of the screen */
-        width: 75vw;        /* Slightly wider for better landscape reading */
+        height: 90vh;      /* Use the full height of the screen */
+        width: 80vw;        /* Slightly wider for better landscape reading */
         margin-left: 10vw;  /* This adds the margin on the left */
         margin-right: auto; /* Ensures it doesn't just push off-screen */
+        margin-top: 5vh;
     }
 
     /* Portrait Mode: Maximize vertical space */
@@ -688,7 +690,6 @@ body {
     
     <div class="index-bar">
         <div class="index-dot" onclick="jumpTo(0)">Intro</div>
-        <div class="index-dot" onclick="jumpTo(381)">End</div>
         
         <div class="index-dot" onclick="jumpTo(32)">1</div>
         <div class="index-dot" onclick="jumpTo(37)">2</div>
@@ -711,19 +712,22 @@ body {
         <div class="index-dot" onclick="jumpTo(214)">18</div>
         <div class="index-dot" onclick="jumpTo(228)">19</div>
         <div class="index-dot" onclick="jumpTo(240)">20</div>
-        <div class="index-dot" onclick="jumpTo(249)">21</div>
-        <div class="index-dot" onclick="jumpTo(268)">22</div>
-        <div class="index-dot" onclick="jumpTo(280)">23</div>
-        <div class="index-dot" onclick="jumpTo(301)">24</div>
-        <div class="index-dot" onclick="jumpTo(312)">25</div>
-        <div class="index-dot" onclick="jumpTo(319)">26</div>
-        <div class="index-dot" onclick="jumpTo(322)">27</div>
-        <div class="index-dot" onclick="jumpTo(324)">28</div>
-        <div class="index-dot" onclick="jumpTo(331)">29</div>
-        <div class="index-dot" onclick="jumpTo(336)">30</div>
-        <div class="index-dot" onclick="jumpTo(345)">31</div>
-        <div class="index-dot" onclick="jumpTo(354)">32</div>
-        <div class="index-dot" onclick="jumpTo(372)">33</div>
+        <div class="index-dot" onclick="jumpTo(250)">21</div>
+        <div class="index-dot" onclick="jumpTo(269)">22</div>
+        <div class="index-dot" onclick="jumpTo(281)">23</div>
+        <div class="index-dot" onclick="jumpTo(302)">24</div>
+        <div class="index-dot" onclick="jumpTo(313)">25</div>
+        <div class="index-dot" onclick="jumpTo(320)">26</div>
+        <div class="index-dot" onclick="jumpTo(323)">27</div>
+        <div class="index-dot" onclick="jumpTo(325)">28</div>
+        <div class="index-dot" onclick="jumpTo(332)">29</div>
+        <div class="index-dot" onclick="jumpTo(338)">30</div>
+        <div class="index-dot" onclick="jumpTo(347)">31</div>
+        <div class="index-dot" onclick="jumpTo(356)">32</div>
+        <div class="index-dot" onclick="jumpTo(374)">33</div>
+
+        <div class="index-dot" onclick="jumpTo(384)">Ref</div>
+        <div class="index-dot" onclick="jumpTo(406)">NBNS</div>
 
     </div>
 </div>
