@@ -176,7 +176,7 @@ body {
         width: 80vw;        /* Slightly wider for better landscape reading */
         margin-left: 10vw;  /* This adds the margin on the left */
         margin-right: auto; /* Ensures it doesn't just push off-screen */
-        margin-top: 5vh;
+        margin-top: 2vh;
     }
 
     /* Portrait Mode: Maximize vertical space */
@@ -194,13 +194,32 @@ body {
     }
 
     /* Move the index button so it doesn't overlap the book in landscape */
-    #menu-toggle {
+    /* #menu-toggle {
         bottom: 10px;
         right: 5px;
-        transform: scale(0.8); /* Shrink it slightly for landscape */
+        transform: scale(0.8);} /* Shrink it slightly for landscape */
+    #menu-toggle {
+        /* Force a perfect circle */
+        width: 60px !important; 
+        height: 60px !important;
+        border-radius: 50% !important;
+        
+        /* Reset centering and push to bottom right */
+        left: auto !important;
+        right: 15px !important; 
+        bottom: 15px !important;
+        transform: none !important; 
+        
+        /* Layout inside the button */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        font-size: 0.6rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
 }        
-    </style>
+</style>
 </head>
 <body>
 
@@ -724,7 +743,7 @@ body {
         <div class="index-dot" onclick="jumpTo(338)">30</div>
         <div class="index-dot" onclick="jumpTo(347)">31</div>
         <div class="index-dot" onclick="jumpTo(356)">32</div>
-        <div class="index-dot" onclick="jumpTo(374)">33</div>
+        <div class="index-dot" onclick="jumpTo(375)">33</div>
 
         <div class="index-dot" onclick="jumpTo(384)">Ref</div>
         <div class="index-dot" onclick="jumpTo(406)">NBNS</div>
