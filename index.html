@@ -230,6 +230,16 @@ body {
         font-size: 0.6rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
+    
+    :fullscreen .book {
+    height: 95vh; /* Take up more space in actual fullscreen mode */
+    margin-top: 2vh;
+    }
+
+    /* For iOS Safari Fullscreen support */
+    :-webkit-full-screen .book {
+    height: 95vh;
+    }
 }        
 </style>
 </head>
@@ -717,7 +727,7 @@ body {
     <div onclick="toggleMenu()" style="color:white; cursor:pointer; font-size:1.2rem;">✕</div>
     </div>
     
-    <div class="index-dot" onclick="toggleFullScreen()" style="width: auto; padding: 0 10px; background: #444;">⛶ FULLSCREEN</div>
+    <div id="fs-btn" class="index-dot" onclick="toggleFullScreen()" style="width: auto; padding: 0 10px; background: #333; color: #fff; border-color: #555;">⛶ FULLSCREEN</div>
     
     <div class="index-bar">
         <div class="index-dot" onclick="jumpTo(0)">Intro</div>
@@ -797,6 +807,40 @@ function handleSwipe() {
     if (swipeDistance > swipeThreshold) {
         goBack();
     }
+}
+
+function toggleFullScreen() {
+    const doc = document.documentElement;
+    const btn = document.getElementById('fs-btn');
+
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        // ENTER FULLSCREEN
+        if (doc.requestFullscreen) {
+            doc.requestFullscreen();
+        } else if (doc.webkitRequestFullscreen) { /* Safari/iOS */
+            doc.webkitRequestFullscreen();
+        }
+        
+        // Update button appearance
+        btn.style.background = "#fff";
+        btn.style.color = "#000";
+        btn.innerText = "✕ EXIT FULLSCREEN";
+    } else {
+        // EXIT FULLSCREEN
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+        
+        // Reset button appearance
+        btn.style.background = "#333";
+        btn.style.color = "#fff";
+        btn.innerText = "⛶ FULLSCREEN";
+    }
+    
+    // Auto-close menu after toggling to show the result
+    setTimeout(toggleMenu, 300);
 }
     
 function updateUI() {
