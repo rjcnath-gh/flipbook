@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
     <title>HKMS</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -795,10 +795,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('flipbook').style.opacity = '1';
     updateUI();
 });
+function enterFullScreen() {
+    const doc = document.documentElement;
+    if (doc.requestFullscreen) {
+        doc.requestFullscreen();
+    } else if (doc.webkitRequestFullscreen) { /* Safari/iOS */
+        doc.webkitRequestFullscreen();
+    } else if (doc.msRequestFullscreen) {
+        doc.msRequestFullscreen();
+    }
+}
+
+// Update your toggleMenu to trigger Fullscreen
 function toggleMenu() {
+    enterFullScreen(); // Triggers as soon as they tap the menu
     const menu = document.getElementById('menu-panel');
     menu.classList.toggle('open');
 }
+    
 
 function jumpTo(targetIndex) {
     // 1. Move the book
